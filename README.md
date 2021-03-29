@@ -3,7 +3,7 @@
 
 ### Creating a Thing
 
-We start bij creating a thing. you can do this by going to https://us-west-2.console.aws.amazon.com/console/home?region=us-west-2#. go to IoT core => lanege => thing. And create a new thing.  The name  is not important but make sure you remember it.  When your thing is created you create a new certificate for this thing and download the 3 keys you are given, put these in a safe place where you can find them easily back becuase we need them later and if you lose them you need to create a thing again. 
+We start bij creating a thing. you can do this by going to https://us-west-2.console.aws.amazon.com/console/home?region=us-west-2#. go to IoT core => manege => thing. And create a new thing.  The name  is not important but make sure you remember it.  When your thing is created you create a new certificate for this thing and download the 3 keys you are given, put these in a safe place where you can find them easily back becuase we need them later and if you lose them you need to create a thing again. 
 
 ### .ino Code
 
@@ -82,42 +82,46 @@ Now you have made a database for your data to test if this was done correctly, c
 Now in your web browser you can test if this works by surfing to your ip followed by /test.php.
 
 
+### http => https
 
-Now to make your connection https instead of http you need to create an account on the noip https://www.noip.com/. Here we create a dns for your ip by clicking the create hostname button. After choosing the best hostname click on it in the no-ip hostname list and putting in your virtual machine ip as the destination. Do take notice that if your machine is closed you will have to do this step gain if you want this domain to keep on working. To solve this follow this link: https://www.noip.com/support/knowledgebase/installing-the-linux-dynamic-update-client-on-ubuntu/ (sudo apt install make & gcc)
+Now to make your connection https instead of http you need to create an account on the noip https://www.noip.com/. Here we create a dns for your ip by clicking the create hostname button. After choosing the best hostname click on it in the no-ip hostname list and putting in your virtual machine ip as the destination. Do take notice that if your machine is closed you will have to do this step gain if you want this domain to keep on working. 
 
-Now to actually get certified we need to use certbot just use the ‘sudo certbot --apache’ command and fill in your information and at the end select option 2 to force everyone to use https.
+### Certbot
 
+Now to actually get certified we need to use certbot just use the **sudo certbot --apache** command and fill in your information and at the end select option 2 to force everyone to use https.
 Now for the finishing touches add the api.php file and list.php files to the var/www/html folder.
-
-To now make aws send your data to the correct location go back to the rule we made in part 1 and add a new action to this rule a http action withe as link your very amazing link followed by /api.php. and three headers withe the keys: device_id, temperature and humidity and values: ${devide_id}, ${temperature} and ${humidity} respectively.
-
+To now make aws send your data to the correct location go back to the rule we made in part 1 and add a new action to this rule a http action with as link your v link followed by /api.php. and three headers withe the keys: device_id, temperature and humidity and values: ${devide_id}, ${temperature} and ${humidity} respectively.
 Now go to destinations and add the api.php link here aswell and to enable it add the api token found using the sudo tail /var/log/apache2/access.log command.
-
 Now by opening your site followed by list.php you should see your esp32 data.
 
-part 3 visualization
-Now that we have our data on the device we want to display it using grafana and we want to know how our virtual machine is doing using telegraf.
 
-influxdb
+# visualization
+
+ we want to display our data using grafana.
+
+### influxdb
+
 First install infuxdb as our database.
 
-sudo curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+**sudo curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -**
 
-then add and influx data repository
+next add and influx data repository
 
-source /etc/lsb-release echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+**source /etc/lsb-release echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list**
 
 now update the package list and install influxdb
 
-sudo apt update sudo apt install influxdb -y
+**sudo apt update sudo apt install influxdb -y**
 
 Now to launch influxdb on boot start the influxdb service.
 
-sudo systemctl start influxdb sudo systemctl enable influxdb
+**sudo systemctl start influxdb** 
+
+**sudo systemctl enable influxdb**
 
 to see if influxdb is running correctly do:
 
-netstat -plntu
+**netstat -plntu**
 
 if in this list port 8088 and 8086 are in a LISTEN state it is running.
 
@@ -125,58 +129,64 @@ now create a user and database this is about the same as we did in mysql.
 
 you start with the influx command
 
-infux
+**influx**
 
 to connect on the 8086 port now you start by creating a database and user for the telegraf client.
 
-create database telegraf create user telegraf with password 'hakase-ndlr'
+**create database telegraf** 
+
+**create user telegraf with password 'hakase-ndlr'**
 
 To make sure these have been created use:
 
-show databases show users
+**show databases**
+
+**show users**
 
 Here you will see the database name telegraf and user name telegraf in you list.
 
 telegraf
 To install telegraf.
 
-sudo apt install telegraf -y
+**sudo apt install telegraf -y**
 
 Now again we want telegraf to start on boot so we start the telegraf service.
 
-sudo systemctl start telegraf sudo systemctl enable telegraf
+**sudo systemctl start telegraf**
+
+**sudo systemctl enable telegraf**
 
 To check if telegraf actualy started, execute.
 
-sudo systemctl status telegraf
+**sudo systemctl status telegraf**
 
-the basics of telegraf is that it has 4 plugin types namely: 1 Using the 'Input Plugins' to collect metrics. 2 Using the 'Processor Plugins' to transform, decorate, and filter metrics. 3 Using the 'Aggregator Plugins' to create and aggregate metrics. 4 And using the 'Output Plugins' to write metrics to various destinations. We are going to use the 1ste type of plugin where you use telegraf to collect system metrics and 4the type to get the metrics to influxdb.
 
 First we make a backup of the telegraf.conf file to restore the original configuration incase of mistakes.
 
-cd /etc/telegraf/ mv telegraf.conf telegraf.conf.default
+**cd /etc/telegraf/ mv telegraf.conf telegraf.conf.default**
 
 now remove the original telegraf.conf
 
-rm telegraf.conf
+**rm telegraf.conf**
 
-now create a new telegraf.conf using nano or your editor of choice and past the data found in the telegraf.txt file on the github in the grafana folder.
+now create a new telegraf.conf  and past the data found in the telegraf.txt file on the github
 
-nano telegraf.conf
+**nano telegraf.conf**
 
 now restart telegraf
 
-sudo systemctl restart telegraf
+**sudo systemctl restart telegraf**
 
 And test if it worked by using these 3 commands
 
-sudo telegraf -test -config /etc/telegraf/telegraf.conf --input-filter cpu sudo telegraf -test -config /etc/telegraf/telegraf.conf --input-filter net sudo telegraf -test -config /etc/telegraf/telegraf.conf --input-filter mem
+**sudo telegraf -test -config /etc/telegraf/telegraf.conf --input-filter cpu**
 
-If this still gives you rerrors you can retry or configure telegraf via the command manager.
+**sudo telegraf -test -config /etc/telegraf/telegraf.conf --input-filter net**
 
-telegraf config -input-filter cpu:mem:disk:swap:system -output-filter influxdb > telegraf.conf cat telegraf.conf
+**sudo telegraf -test -config /etc/telegraf/telegraf.conf --input-filter mem**
 
-grafana
+### grafana
+
 To install grafana this could be an outdated method by now so make sure to check the tutorial by grafana https://grafana.com/docs/grafana/latest/installation/debian/. In this case we are using grafana enterprise. first do
 
 sudo apt-get install -y apt-transport-https sudo apt-get install -y software-properties-common wget wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
