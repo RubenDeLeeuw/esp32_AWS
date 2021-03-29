@@ -27,53 +27,61 @@ Now you login with the username ubuntu.
 
 Were going to do some commands to update/download everything and soon creating our first mysql database.
 
-Now start by doing the **'sudo apt-get update'** and **'sudo apt-get upgrade'**
+Now start by doing the **sudo apt-get update** and **sudo apt-get upgrade**
 
 When this is finished, do the following commands to get an apache server running and a database.
 
-**'sudo apt install apache2'**
+**sudo apt install apache2**
 
-**'sudo apt install mysql-server'**
+**sudo apt install mysql-server**
 
-**'sudo apt install php libapache2-mod-php php-mysql'** 
+**sudo apt install php libapache2-mod-php php-mysql** 
 
-**'sudo chmod 777 /var/www/html'** 
+**sudo chmod 777 /var/www/html** 
 
-**'sudo systemctl restart apache2'** 
+**sudo systemctl restart apache2** 
 
-**'sudo apt install certbot'** 
+**sudo apt install certbot** 
 
-**'sudo apt install python3-certbot-apache'**
+**sudo apt install python3-certbot-apache**
 
 ### Mysql Database
 
 **'sudo mysql'**
 
-now you have entered the mysql command line now follow these steps (can also be found in the sql.txt file) everything in [] should be changed to something of your choice. do remember these because we will be needing them for your secrets file.
+now you have entered the mysql command line now follow these steps 
 
-CREATE DATABASE [DATABASENAME];
+**CREATE DATABASE [DATABASENAME];**
 
-CREATE USER '[USERNAME]'@'localhost' IDENTIFIED BY '[PASSWORD]';
+**CREATE USER '[USERNAME]'@'localhost' IDENTIFIED BY '[PASSWORD]';**
 
-GRANT ALL PRIVILEGES ON [DATABASENAME].* TO '[USERNAME]'@'localhost';
+**GRANT ALL PRIVILEGES ON [DATABASENAME].* TO '[USERNAME]'@'localhost';**
 
-FLUSH PRIVILEGES;
+**FLUSH PRIVILEGES;**
 
-USE [DATABASENAME];
+**USE [DATABASENAME];**
 
-CREATE TABLE esp32 (
-ID INT NOT NULL AUTO_INCREMENT,
-Device_id VARCHAR (100) NOT NULL,
-Temperature Float,
-Humidity Float,
-Datetime DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (ID)
-);
+**CREATE TABLE esp32 (**
 
-quit
+**ID INT NOT NULL AUTO_INCREMENT,**
+
+**Device_id VARCHAR (100) NOT NULL,**
+
+**Temperature Float,**
+
+**Humidity Float,**
+
+**Datetime DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (ID)**
+
+**);**
+
+**quit**
 
 Now you have made a database for your data to test if this was done correctly, copy/create the test.php and mysql_connect.php from the cloud_api folder to the /var/www/html directory. In this same directory you create a secrets.php from the example_secrets in the cloud_api.
 
 Now in your web browser you can test if this works by surfing to your ip followed by /test.php.
+
+
 
 Now to make your connection https instead of http you need to create an account on the noip https://www.noip.com/. Here we create a dns for your ip by clicking the create hostname button. After choosing the best hostname click on it in the no-ip hostname list and putting in your virtual machine ip as the destination. Do take notice that if your machine is closed you will have to do this step gain if you want this domain to keep on working. To solve this follow this link: https://www.noip.com/support/knowledgebase/installing-the-linux-dynamic-update-client-on-ubuntu/ (sudo apt install make & gcc)
 
