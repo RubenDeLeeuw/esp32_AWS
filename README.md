@@ -1,6 +1,7 @@
 
 # esp32MQTTonAWS
 
+### Creating a Thing
 
 We start bij creating a thing. you can do this by going to https://us-west-2.console.aws.amazon.com/console/home?region=us-west-2#. go to IoT core => lanege => thing. And create a new thing.  The name  is not important but make sure you remember it.  When your thing is created you create a new certificate for this thing and download the 3 keys you are given, put these in a safe place where you can find them easily back becuase we need them later and if you lose them you need to create a thing again. 
 
@@ -8,7 +9,7 @@ We start bij creating a thing. you can do this by going to https://us-west-2.con
 
 Once you have done this open the .ino file from this project. next you create a secrets.h file in the same folder according to the example found. now we need the keys we got earlier when we created our thing. Open the keys in a texteditor like notepad and copy them. put them on the right place in the code and once you placed all the keys on the right place in the code you can upload them.
 
-### S3 Bucket
+### Creating S3 Bucket
 
 Now were going to make a s3 bucket for our thing. go to s3 => bucket and create here a new bucket. Choose the same server as youre thing.
 go back to AWS IoT and in act got ot rules here you have to add a new rule. choose a rule name and change the topic to the topi in youre .ino code. next you need to add an action. select store message in amazon s3 bucket. then choose your bucket from the previous step and as key I choose data/${device_id}_${topic()}/${timestamp()}. the data you send should now appear in your bucket.
