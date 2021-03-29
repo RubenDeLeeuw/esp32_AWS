@@ -27,21 +27,27 @@ Now you login with the username ubuntu.
 
 Were going to do some commands to update/download everything and soon creating our first mysql database.
 
-Now start by doing the **sudo apt-get update** and **sudo apt-get upgrade **
+Now start by doing the **'sudo apt-get update'** and **'sudo apt-get upgrade'**
 
 When this is finished, do the following commands to get an apache server running and a database.
 
-**sudo apt install apache2**
-**sudo apt install mysql-server**
-**sudo apt install php libapache2-mod-php php-mysql** 
-**sudo chmod 777 /var/www/html** 
-**sudo systemctl restart apache2** 
-**sudo apt install certbot** 
-**sudo apt install python3-certbot-apache**
+**'sudo apt install apache2'**
+
+**'sudo apt install mysql-server'**
+
+**'sudo apt install php libapache2-mod-php php-mysql'** 
+
+**'sudo chmod 777 /var/www/html'** 
+
+**'sudo systemctl restart apache2'** 
+
+**'sudo apt install certbot'** 
+
+**'sudo apt install python3-certbot-apache'**
 
 ### Mysql Database
 
-**sudo mysql**
+**'sudo mysql'**
 
 now you have entered the mysql command line now follow these steps (can also be found in the sql.txt file) everything in [] should be changed to something of your choice. do remember these because we will be needing them for your secrets file.
 
