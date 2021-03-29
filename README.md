@@ -2,21 +2,19 @@
 # esp32MQTTonAWS
 
 
-to make this project you will need: activated AWS account, esp32 and a dht11/22
+We start bij creating a thing. you can do this by going to https://us-west-2.console.aws.amazon.com/console/home?region=us-west-2#. go to IoT core => lanege => thing. And create a new thing.  The name  is not important but make sure you remember it.  When your thing is created you create a new certificate for this thing and download the 3 keys you are given, put these in a safe place where you can find them easily back becuase we need them later and if you lose them you need to create a thing again. 
 
-In aws IoT we start by creating a thing in the manage things tab. The name of this thing is not important just see that you remember it. In the next step you can ignore most of the things there. Afterwards you create a new certificate for this thing and download the 3 keys you are given and put these in a safe place. These could put your data at risk if you give them to anyone.
+### .ino Code
 
-Click on the activate button below and the download link for the root CA for AWS IoT there you will need to get the amazon root CA 1.
+Once you have done this open the .ino file from this project. next you create a secrets.h file in the same folder according to the example found. now we need the keys we got earlier when we created our thing. Open the keys in a texteditor like notepad and copy them. put them on the right place in the code and once you placed all the keys on the right place in the code you can upload them.
 
-Once you have done this open the .ino file from this project. In this file you should not change a thing. Unless you want to change the used pins or the dht type. then in the same folder you create a secrets.h file according to the example found. the topics there refer to a topic on the mqtt server and will decide where your data will be stored. after including all the information we are gonna need the keys we got earlier when creating our thing, these can just be opened in notepad. The first key is the last key we downloaded and should have a name with root and ca 1 in it. The second will have certificata.perm.crt.txt in its name. the last will have private perm in the name. one you filled these in you can upload the code.
+### S3 Bucket
 
-If this works you will get an AWS IoT connected! message on your serial monitor.
+Now were going to make a s3 bucket for our thing. go to s3 => bucket and create here a new bucket. Choose the same server as youre thing.
+go back to AWS IoT and in act got ot rules here you have to add a new rule. choose a rule name and change the topic to the topi in youre .ino code. next you need to add an action. select store message in amazon s3 bucket. then choose your bucket from the previous step and as key I choose data/${device_id}_${topic()}/${timestamp()}. the data you send should now appear in your bucket.
 
-Now on AWS go to the S3 section and here we are going to make a bucket for this you just choose and the server to store the bucket at the smartest choice here is to use the same server as the one where your thing is located.
+# cloud api
 
-now go back to AWS IoT and in act got ot rules here you have to add a new rule here you choose a rule name and in the select * from you change the iot/topic to the before chosen mqtt topic in your secrets.h. After this go to add action here you select store message in amazon s3 bucket. then choose your bucket from the previous step and as key I choose data/${device_id}_${topic()}/${timestamp()}. and the role I gave is AWSIOT_S3_FULL. the data you send should now appear in your bucket.
-
-part 2 cloud api
 Now we are storing the data on a bucket yet this is not ideal so now create an EC2 virtual machine on aws. In my application I used an ubuntu server with the t2 micro tear this is one of the verry cheap tears and even free if you play your cards right. The rest you can mostly ignore except for the 6ste step here you have to add http and https (port 80 and 443 do not remove the port 22 connection). After clicking confirm you have the option to add a pair key or use an existing one the safest option is to generate a new one. So just give it a name and download your freshly generated key. don’t forget to download it else there is no easy way to recover it. Ifi things still are as when i did it you now have an outdated key with a different extension then .ppk if you did get a ppk file you don’t have to do this next strep. First you have to download PuTTY and open PuTTYgen one you open PuTTYgen your klick load and open the key file you just got. It will give you some warnings just ignore them and continue. Now save this key under the same name as the previous key. Now go back to aws EC2 where you can find the ip address of your virtual machine. Now open up PuTTY select ssh as connection type and put in the IP you just got from AWS. Before you can open the connection on the left side you see a menu here go into ssh and click on auth here click browse and select the file you got from PuTTYgen. now you should be able to open a connection using the open button.
 
 Now you login with the username ubuntu.
