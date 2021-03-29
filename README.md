@@ -16,7 +16,12 @@ go back to AWS IoT and in act got ot rules here you have to add a new rule. choo
 
 # cloud api
 
-Now we are storing the data on a bucket yet this is not ideal so now create an EC2 virtual machine on aws. In my application I used an ubuntu server with the t2 micro tear this is one of the verry cheap tears and even free if you play your cards right. The rest you can mostly ignore except for the 6ste step here you have to add http and https (port 80 and 443 do not remove the port 22 connection). After clicking confirm you have the option to add a pair key or use an existing one the safest option is to generate a new one. So just give it a name and download your freshly generated key. don’t forget to download it else there is no easy way to recover it. Ifi things still are as when i did it you now have an outdated key with a different extension then .ppk if you did get a ppk file you don’t have to do this next strep. First you have to download PuTTY and open PuTTYgen one you open PuTTYgen your klick load and open the key file you just got. It will give you some warnings just ignore them and continue. Now save this key under the same name as the previous key. Now go back to aws EC2 where you can find the ip address of your virtual machine. Now open up PuTTY select ssh as connection type and put in the IP you just got from AWS. Before you can open the connection on the left side you see a menu here go into ssh and click on auth here click browse and select the file you got from PuTTYgen. now you should be able to open a connection using the open button.
+now were going to create an EC2 virtual machine on aws to store our data. I used an ubuntu server with the t2 micro tear because this one is the cheapest. You don't have to change much in the first 5 steps but notice in the 6th step you have to add http and https. After completing the last step generate a key, give it a name and **download** it. . now open PuTTYgen choose the key you recently downloaded and load it. Now go back to aws EC2 where you can find the ip address of your virtual machine. Now open up PuTTY select ssh as connection type and put in the IP you just got from AWS. 
+
+
+### Ubuntu
+
+Before you can open the connection on the left side you see a menu here go into ssh and click on auth here click browse and select the file you got from PuTTYgen. now you should be able to open a connection using the open button.
 
 Now you login with the username ubuntu.
 
@@ -173,4 +178,3 @@ To create a lambda function go to the compute section on aws and select lambda. 
 
 Now you should see an add trigger button click here and select AWS IoT then select custom IoT rule and existing rule. Now you should be able to select the rule we made before to send the data from iot to the bucket and the api on the virtual machine also make sure to select the enable trigger that will make your life easier. Now to actually make the function useful you should add the code found in de lmada folder in the AWS IoT file to the lambda_funtion.py file on aws and editing the led topic to your own and correcting the server to the one you are on now.
 
-Now as an extra you can add another function this time using API gateway as a trigger to turn the led on and off using a url. for this the code can be found in the api file in the lambda folder. Then just surf to the given url followed by "?led=1" or "?led=0" to turn the led on and off this could then also be used to make a button in grafana.
