@@ -187,26 +187,33 @@ And test if it worked by using these 3 commands
 
 ### grafana
 
-To install grafana this could be an outdated method by now so make sure to check the tutorial by grafana https://grafana.com/docs/grafana/latest/installation/debian/. In this case we are using grafana enterprise. first do
+To install grafana  do
 
-sudo apt-get install -y apt-transport-https sudo apt-get install -y software-properties-common wget wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+**sudo apt-get install -y apt-transport-https** 
 
-then do: echo "deb https://packages.grafana.com/enterprise/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+**sudo apt-get install -y software-properties-common wget** 
 
-to get the latest stable release. and now for the actual installation using apt now that grafana is in the package list.
+**wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -**
 
-sudo apt update sudo apt install grafana-enterprise
+**echo "deb https://packages.grafana.com/enterprise/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list**
 
-Now again we want grafana to run as a service as well so we use the commands:
+**sudo apt update**
 
-sudo systemctl daemon-reload sudo systemctl start grafana-server sudo systemctl status grafana-server sudo systemctl enable grafana-server.service
+**sudo apt install grafana-enterprise**
 
-now go back to aws and here we have to open the port 3000 to the world in order to access grafana from other devices. To do this go to ec2 on aws and in instances klick on your instance now at the bottom there is a window with the instance details. Here you click on security then on the link under the title security groups. This link will bring you to the launch wizard for your security. Here you click on edit inbound rules and add a custom TCP rule for the port 3000 and with the course 0.0.0.0/0.
+**sudo systemctl daemon-reload**
 
-Once the port is open you can surf to you ip flowed by the port 3000 to go to the grafana interface here you add mysql as your data source. to do more things in grafana ia would suggest looking up an actual tutorial or trying sommething like this https://docs.alfresco.com/sync-service/3.1/admin/monitor/grafana/.
+**sudo systemctl start grafana-server**
 
-part 4 lambda
-Now we want to control the led we have on our esp32 which has not been used up until this point. To do this we will use lambda on aws to create a function in python that listens to our mqtt service and turns the light on in case the temperature is too high.
+**sudo systemctl status grafana-server**
+
+**sudo systemctl enable grafana-server.service**
+
+now go back to aws and here we have to open the port 3000 to the world in order to access grafana from other devices. To do this go to ec2 on aws and in instances click on your instance now at the bottom there is a window with the instance details. Here you click on security then on the link under the title security groups. This link will bring you to the launch wizard for your security. Here you click on edit inbound rules and add a custom TCP rule for the port 3000 and with the course 0.0.0.0/0.
+
+Once the port is open you can surf to you ip flowed by the port 3000 to go to the grafana interface here you add mysql as your data source. now when you can create a dashboards with some graphs to see youre data
+
+# lambda
 
 To create a lambda function go to the compute section on aws and select lambda. in functions you click create function. Normally ‘author from scratch’ is selected, if not select this then you can fill in the name of this function and in runtime select python, the version doesn't really matter.
 
